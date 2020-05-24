@@ -37,7 +37,7 @@ for event in longpoll.listen():
 						 message="Понг")
 		elif msg==":кик":
 			if 'reply_message' in event.obj.message and event.from_chat:
-				if event.from_chat and id==381510409:
+				if event.from_chat and id==ид_админа:
 					vk.messages.removeChatUser(chat_id=event.chat_id, 
 								   member_id=event.obj.message['reply_message']['from_id'])
 				else:
