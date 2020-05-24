@@ -71,7 +71,7 @@ for event in longpoll.listen():
 			stm="Просто сообщение"
 			if 'reply_message' in event.obj.message:
 				stm="Ответ на сообщение от "+fio(event.obj.message['reply_message']['from_id'])
-			elif 'fwd_messages' in event.obj.message:
+			elif 'fwd_messages' in event.obj.message and len(event.obj.message['fwd_messages'])>0:
 				stm="Пересланные сообщения от "+fios(event.obj.message['fwd_messages'][i]['from_id'] for i in range(len(event.obj.message['fwd_messages'])))
 			if event.from_user:
 				vk.messages.send(user_id=id, 
