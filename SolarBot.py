@@ -43,9 +43,9 @@ for event in longpoll.listen():
 		elif msg==":probe":
 			stm="Просто сообщение"
 			if 'reply_message' in event.obj.message:
-				stm="Ответ на сообщение от "+fio(event.obj.message['reply_message']['from_id'])
+				stm="Ответ на сообщение")
 			elif 'fwd_messages' in event.obj.message:
-				stm="Пересланные сообщения от "+fio(event.obj.message['fwd_messages']['from_id'])
+				stm="Пересланные сообщения")
 			if event.from_user:
 				vk.messages.send(user_id=id, random_id=random.randint(0, 2**64), message=stm+" в ЛС")
 			elif event.from_chat:
