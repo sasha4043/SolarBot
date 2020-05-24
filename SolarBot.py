@@ -58,6 +58,15 @@ for event in longpoll.listen():
 					vk.messages.send(chat_id=event.chat_id, 
 							 random_id=random.randint(0, 2**64), 
 							 message=str(event.obj.message['reply_message']['from_id']))
+			elif 'fwd_messages' in event.obj.message and len(event.obj.message['fwd_messages'])>0:
+				if event.from_user:
+					vk.messages.send(user_id=id, 
+							 random_id=random.randint(0, 2**64), 
+							 message=str(event.obj.message['fwd_message'][0]['from_id']))
+				elif event.from_chat:
+					vk.messages.send(chat_id=event.chat_id, 
+							 random_id=random.randint(0, 2**64), 
+							 message=str(event.obj.message['fwd_message'][0]['from_id']))
 			else:
 				if event.from_user:
 					vk.messages.send(user_id=id, 
