@@ -8,6 +8,9 @@ vk_session = vk_api.VkApi(token="токен группы")
 longpoll = VkBotLongPoll(vk=vk_session, group_id=ид_группы)
 vk = vk_session.get_api()
 
+def fio(user_id):
+	return str(vk.users.get(user_ids=user_id)['first_name']+" "+vk.users.get(user_ids=user_id)['last_name'])  # не работает
+
 for event in longpoll.listen():
 	if event.type == VkBotEventType.MESSAGE_NEW:
 		print(event.obj.message)
@@ -40,9 +43,9 @@ for event in longpoll.listen():
 		elif msg==":probe":
 			stm="Просто сообщение"
 			if 'reply_message' in event.obj.message:
-				stm="Ответ на сообщение")
+				stm="Ответ на сообщение от "+fio(event.obj.message['reply_message']['from_id'])
 			elif 'fwd_messages' in event.obj.message:
-				stm="Пересланные сообщения")
+				stm="Пересланные сообщения от "+fio(event.obj.message['fwd_messages']['from_id'])
 			if event.from_user:
 				vk.messages.send(user_id=id, random_id=random.randint(0, 2**64), message=stm+" в ЛС")
 			elif event.from_chat:
