@@ -193,3 +193,7 @@ for event in longpoll.listen():
 							vk.messages.send(chat_id=event.chat_id, 
 									 random_id=random.randint(0, 2**64), 
 									 message='У [id'+str(event.obj.message['reply_message']['from_id'])+'|пользователя] и так нет админки')
+		elif 'action' in event.obj.message and event.obj.message['action']['type']=='chat_kick_user' and event.obj.message['action']['member_id']==id:
+			if event.from_chat:
+					vk.messages.removeChatUser(chat_id=event.chat_id, 
+								   member_id=id)
