@@ -153,23 +153,43 @@ for event in longpoll.listen():
 						 message=admin_list_names())
 		elif msg==":addadm":
 			if 'reply_message' in event.obj.message:
-				admin_add(event.obj.message['reply_message']['from_id'])
-				if event.from_user:
-					vk.messages.send(user_id=id, 
-							 random_id=random.randint(0, 2**64), 
-							 message='[id'+str(event.obj.message['reply_message']['from_id'])+'|Пользователь] получил админку')
-				elif event.from_chat:
-					vk.messages.send(chat_id=event.chat_id, 
-							 random_id=random.randint(0, 2**64), 
-							 message='[id'+str(event.obj.message['reply_message']['from_id'])+'|Пользователь] получил админку')
+				atat=admin_add(event.obj.message['reply_message']['from_id'])
+				if atat == 2:
+					if event.from_user:
+						vk.messages.send(user_id=id, 
+								 random_id=random.randint(0, 2**64), 
+								 message='[id'+str(event.obj.message['reply_message']['from_id'])+'|Пользователь] получил админку')
+					elif event.from_chat:
+						vk.messages.send(chat_id=event.chat_id, 
+								 random_id=random.randint(0, 2**64), 
+								 message='[id'+str(event.obj.message['reply_message']['from_id'])+'|Пользователь] получил админку')
+				elif atat == 1:
+					if event.from_user:
+						vk.messages.send(user_id=id, 
+								 random_id=random.randint(0, 2**64), 
+								 message='У [id'+str(event.obj.message['reply_message']['from_id'])+'|пользователя] и так есть админка')
+					elif event.from_chat:
+						vk.messages.send(chat_id=event.chat_id, 
+								 random_id=random.randint(0, 2**64), 
+								 message='У [id'+str(event.obj.message['reply_message']['from_id'])+'|пользователя] и так есть админка')
 		elif msg==":deladm":
 			if 'reply_message' in event.obj.message:
-				admin_del(event.obj.message['reply_message']['from_id'])
-				if event.from_user:
-					vk.messages.send(user_id=id, 
-							 random_id=random.randint(0, 2**64), 
-							 message='[id'+str(event.obj.message['reply_message']['from_id'])+'|Пользователь] лишился админки')
-				elif event.from_chat:
-					vk.messages.send(chat_id=event.chat_id, 
-							 random_id=random.randint(0, 2**64), 
-							 message='[id'+str(event.obj.message['reply_message']['from_id'])+'|Пользователь] лишился админки')
+				atat=admin_del(event.obj.message['reply_message']['from_id'])
+				if atat == 2:
+					if event.from_user:
+						vk.messages.send(user_id=id, 
+								 random_id=random.randint(0, 2**64), 
+								 message='[id'+str(event.obj.message['reply_message']['from_id'])+'|Пользователь] лишился админки')
+					elif event.from_chat:
+						vk.messages.send(chat_id=event.chat_id, 
+								 random_id=random.randint(0, 2**64), 
+								 message='[id'+str(event.obj.message['reply_message']['from_id'])+'|Пользователь] лишился админки')
+				elif atat == 1:
+						if event.from_user:
+							vk.messages.send(user_id=id, 
+									 random_id=random.randint(0, 2**64), 
+									 message='У [id'+str(event.obj.message['reply_message']['from_id'])+'|пользователя] и так нет админки')
+						elif event.from_chat:
+							vk.messages.send(chat_id=event.chat_id, 
+									 random_id=random.randint(0, 2**64), 
+									 message='У [id'+str(event.obj.message['reply_message']['from_id'])+'|пользователя] и так нет админки')
