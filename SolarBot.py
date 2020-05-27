@@ -77,19 +77,6 @@ for event in longpoll.listen():
 				vk.messages.send(chat_id=event.chat_id, 
 						 random_id=random.randint(0, 2**64), 
 						 message="Понг")
-		elif msg==":кик":
-			if 'reply_message' in event.obj.message and event.from_chat:
-				if event.from_chat and id==ид_админа:				# Потом здесь вместо id==ид_админа, будет проверка наличия пользователя в списке админов
-					vk.messages.removeChatUser(chat_id=event.chat_id, 
-								   member_id=event.obj.message['reply_message']['from_id'])
-				else:
-					vk.messages.send(chat_id=event.chat_id, 
-							 random_id=random.randint(0, 2**64), 
-							 message="Пшёл нах")
-			else:
-					vk.messages.send(chat_id=event.chat_id, 
-							 random_id=random.randint(0, 2**64), 
-							 message="А кого?")
 		elif msg==":id":
 			if 'reply_message' in event.obj.message:
 				if event.from_user:
@@ -152,39 +139,41 @@ for event in longpoll.listen():
 						 random_id=random.randint(0, 2**64), 
 						 message=admin_list_names())
 		elif msg==":addadm":
-			if 'reply_message' in event.obj.message:
-				atat=admin_add(event.obj.message['reply_message']['from_id'])
-				if atat == 2:
-					if event.from_user:
-						vk.messages.send(user_id=id, 
-								 random_id=random.randint(0, 2**64), 
-								 message='[id'+str(event.obj.message['reply_message']['from_id'])+'|Пользователь] получил админку')
-					elif event.from_chat:
-						vk.messages.send(chat_id=event.chat_id, 
-								 random_id=random.randint(0, 2**64), 
-								 message='[id'+str(event.obj.message['reply_message']['from_id'])+'|Пользователь] получил админку')
-				elif atat == 1:
-					if event.from_user:
-						vk.messages.send(user_id=id, 
-								 random_id=random.randint(0, 2**64), 
-								 message='У [id'+str(event.obj.message['reply_message']['from_id'])+'|пользователя] и так есть админка')
-					elif event.from_chat:
-						vk.messages.send(chat_id=event.chat_id, 
-								 random_id=random.randint(0, 2**64), 
-								 message='У [id'+str(event.obj.message['reply_message']['from_id'])+'|пользователя] и так есть админка')
+			with open('admlist.json') as f:
+				file_content = f.read()
+				admlist = json.loads(file_content)
+			if id in admlist['ids']:
+				if 'reply_message' in event.obj.message:
+					atat=admin_add(event.obj.message['reply_message']['from_id'])
+					if atat == 2:
+						if event.from_chat:
+							vk.messages.send(chat_id=event.chat_id, 
+									 random_id=random.randint(0, 2**64), 
+									 message='[id'+str(event.obj.message['reply_message']['from_id'])+'|Пользователь] получил админку')
+					elif atat == 1:
+						if event.from_chat:
+							vk.messages.send(chat_id=event.chat_id, 
+									 random_id=random.randint(0, 2**64), 
+									 message='У [id'+str(event.obj.message['reply_message']['from_id'])+'|пользователя] и так есть админка')
+			else:
+				vk.messages.send(chat_id=event.chat_id, random_id=random.randint(0, 2 ** 64), message="Пшёл нах. Недостаточно прав")
 		elif msg==":deladm":
-			if 'reply_message' in event.obj.message:
-				atat=admin_del(event.obj.message['reply_message']['from_id'])
-				if atat == 2:
-					if event.from_user:
-						vk.messages.send(user_id=id, 
-								 random_id=random.randint(0, 2**64), 
-								 message='[id'+str(event.obj.message['reply_message']['from_id'])+'|Пользователь] лишился админки')
-					elif event.from_chat:
-						vk.messages.send(chat_id=event.chat_id, 
-								 random_id=random.randint(0, 2**64), 
-								 message='[id'+str(event.obj.message['reply_message']['from_id'])+'|Пользователь] лишился админки')
-				elif atat == 1:
+			with open('admlist.json') as f:
+				file_content = f.read()
+				admlist = json.loads(file_content)
+			if id in admlist['ids']:
+				if 'reply_message' in event.obj.message:
+					atat=admin_del(event.obj.message['reply_message']['from_id'])
+					if atat == 2:
+						if event.from_user:
+							vk.messages.send(user_id=id, 
+									 random_id=random.randint(0, 2**64), 
+									 message='[id'+str(event.obj.message['reply_message']['from_id'])+'|Пользователь] лишился админки')
+						elif event.from_chat:
+							vk.messages.send(chat_id=event.chat_id, 
+									 random_id=random.randint(0, 2**64), 
+									 message='[id'+str(event.obj.message['reply_message']['from_id'])+'|Пользователь] лишился админки')
+					elif atat == 1:
 						if event.from_user:
 							vk.messages.send(user_id=id, 
 									 random_id=random.randint(0, 2**64), 
@@ -193,7 +182,30 @@ for event in longpoll.listen():
 							vk.messages.send(chat_id=event.chat_id, 
 									 random_id=random.randint(0, 2**64), 
 									 message='У [id'+str(event.obj.message['reply_message']['from_id'])+'|пользователя] и так нет админки')
+			else:
+				vk.messages.send(chat_id=event.chat_id, random_id=random.randint(0, 2 ** 64), message="Пшёл нах. Недостаточно прав")
 		elif 'action' in event.obj.message and event.obj.message['action']['type']=='chat_kick_user' and event.obj.message['action']['member_id']==id:
 			if event.from_chat:
 					vk.messages.removeChatUser(chat_id=event.chat_id, 
 								   member_id=id)
+		elif msg == ":кик":
+			with open('admlist.json') as f:
+				file_content = f.read()
+				admlist = json.loads(file_content)
+			if id in admlist['ids']:
+				if 'reply_message' in event.obj.message and event.from_chat:
+					search_word = str(event.obj.message['reply_message']['from_id'])
+					members = vk.messages.getConversationMembers(peer_id=event.object.message['peer_id'])
+					for i in members["items"]:
+						if i["member_id"] == event.obj.message['reply_message']['from_id']:
+							admin = i.get('is_admin', False)
+					if admin == True:
+						vk.messages.send(chat_id=event.chat_id, random_id=random.randint(0, 2 ** 64), message="Пшёл нах. [id"+str(event.obj.message['reply_message']['from_id'])+'|Пользователь] является администратором беседы')
+					elif event.obj.message['reply_message']['from_id'] in admlist['ids']:
+						vk.messages.send(chat_id=event.chat_id, random_id=random.randint(0, 2 ** 64), message="Пшёл нах. [id"+str(event.obj.message['reply_message']['from_id'])+'|Пользователь] является администратором бота')
+					else:
+						vk.messages.removeChatUser(chat_id=event.chat_id, member_id=event.obj.message['reply_message']['from_id'])
+				else:
+					vk.messages.send(chat_id=event.chat_id, random_id=random.randint(0, 2 ** 64), message="А кого?")
+			else:
+				vk.messages.send(chat_id=event.chat_id, random_id=random.randint(0, 2 ** 64), message="Пшёл нах. Недостаточно прав")
